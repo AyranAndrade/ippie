@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="ippie" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>br.com.ippie.negocio.Acesso</class>
+    <class>br.com.ippie.negocio.Aprovacao</class>
+    <class>br.com.ippie.negocio.Comentario</class>
+    <class>br.com.ippie.negocio.Concordar</class>
+    <class>br.com.ippie.negocio.Discordar</class>
+    <class>br.com.ippie.negocio.Login</class>
+    <class>br.com.ippie.negocio.Pesame</class>
+    <class>br.com.ippie.negocio.Reprovacao</class>
+    <class>br.com.ippie.negocio.Usuario</class>
+    <class>br.com.ippie.negocio.Conteudo</class>
+    <class>br.com.ippie.negocio.TipoConteudo</class>
+    <class>br.com.ippie.negocio.Assunto</class>
+    <shared-cache-mode>ALL</shared-cache-mode>
+    <properties>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+    </properties>
+  </persistence-unit>
+</persistence>

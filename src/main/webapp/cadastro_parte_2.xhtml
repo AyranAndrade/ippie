@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Parte 2 do cadastro</title>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+        <style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;}
+            a{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}
+        </style>        
+    </h:head>
+    <h:body class="fundo">
+        <p:panel>
+            <f:facet name="header">
+               <center>
+                    <p:link outcome="login">
+                        <p:graphicImage value="imagens/logo.png" height="200"/>
+                    </p:link>
+                    <br/>
+                    <div style="font-weight: bolder">
+                        Desculpe o incômodo, mas 
+                        nós precisamos ter certeza<br/> que você não é um robô.
+                        Mas não se preocupe: O cadastro já está acabando!
+                    </div>
+                </center> 
+            </f:facet>
+            <center>
+                    <h:form>
+                        <p:growl id="grwCadastroParte2"/>
+                        <p:captcha label="Você é um robô?" language="pt_BR" required="true"
+                                   theme="white"
+                                   requiredMessage="Você precisa provar que não é um robô!"/>
+                        <p:panelGrid columns="2" styleClass="ui-noborder">
+                            <p:button outcome="login" value="Voltar"/>
+                            <p:commandButton value="Confirmar" update="grwCadastroParte2"
+                                         action="cadastro_parte_3"/>
+                        </p:panelGrid>
+                    </h:form>
+                </center>
+        </p:panel>
+    </h:body>
+</html>

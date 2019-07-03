@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>O que é o Ippie?</title>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+<style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;}
+            a{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}  
+        </style>        
+    </h:head>
+    <h:body class="fundo">
+        <p:panel>
+            <f:facet name="header">
+               <center>
+                    <p:link outcome="login">
+                        <p:graphicImage value="imagens/logo.png" height="200"/>
+                    </p:link>
+                </center> 
+            </f:facet>
+            
+            <center>
+                      O Ippie é uma rede social que se baseia nos assuntos preferidos de cada usuário para lhe trazer conteúdo que ele julga relevante. Não temos o conceito de amigos, nem seguidores, muito comum em outras redes 
+sociais, pois acreditamos, que na nossa internet moderna, o conteúdo de um post é muito mais importante do o autor do post. Quando você vê um "meme", por exemplo, você não sabe nem liga pro autor daquilo, a 
+pessoa que realmente teve o trabalho de fazer aquilo. Você apenas liga se o "meme" é engraçado ou não. O mesmo serve para vídeos, imagens críticas, ou até mesmos os textos críticos e opinativos. Você sempre 
+liga mais pro conteúdo do post do que pro autor. Daí, qual é a importância de você conhecer os autores do posts que aparecem pra você? Acreditamos que nenhuma. Daí, não temos amigos nem seguidores. 
+Acreditamos que o que move as pessoas nas redes sociais são muito mais os seus interesses. Você sempre "curti" os posts que, de alguma forma, lhe são do seu agrado. A maioria esmagadora dos "grupos" em que 
+você participa são sobre assuntos que você gosta ou admira. Então, por que não fazer uma rede social explicita e exclusivamente focada nos seus assuntos favoritos e não em relações sociais muitas vezes 
+hipócritas e cansativas? Você realmente tem 500 ou mais amigos na vida real? Ou eles são apenas conhecidos? Quantas vezes você quis "compartilhar algo" e não o fez, pois alguém que é seu amigo ou seguidor 
+não iria gostar?
+                </center>
+            
+            <f:facet name="footer">
+               <center>
+                    <p:link value="Agradecimentos" outcome="agradecimento"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Termos de uso" outcome="termos_de_uso"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Contato e sugestões" outcome="contato"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Quer trabalhar no Ippie?" outcome="trabalhar_no_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="O que é o Ippie?" outcome="o_que_e_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Login" outcome="login"/>
+                </center> 
+            </f:facet>
+        </p:panel>
+    </h:body>
+</html>

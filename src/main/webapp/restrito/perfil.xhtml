@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Perfil de #{conteudoBean.perfilParaVisistar.nomeCompleto}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" 
+              href="#{facesContext.externalContext.requestContextPath}/css/desktop.css" 
+              media="screen"/>
+        <style>
+            .ui-panelgrid .ui-panelgrid-cell{border-width: 0px;border-style: none;}
+            .ui-widget-content {background: #fff}
+            .ui-datalist-content{border: none}
+            .ui-datalist-data li{display: inline;padding-right: 20px;}
+            .ui-widget-content{border:none !important;}
+        </style>
+    </h:head>
+    <h:body class="fundo">
+        <ui:include src="../WEB-INF/paginas/barra_superior.xhtml"/>
+        
+        <center>
+            <p:panel styleClass="ui-noborder" class="cabecalho"
+                     style="background:#fff url(#{configuracaoBean.fotoCabecalho()}#{conteudoBean.perfilParaVisistar.fotoCabecalho}) no-repeat center !important">
+                <center>
+                    <p:graphicImage height="150" style="border-radius:50%"
+                                    value="#{configuracaoBean.fotoPerfil()}#{conteudoBean.perfilParaVisistar.fotoPerfil}"/>
+                    <br/>
+                    <p:outputLabel value="#{conteudoBean.perfilParaVisistar.nomeCompleto}" id="nome"/>
+                    <br/>
+                    <p:spacer height="40" width="0"/>
+                    <p:outputLabel value="#{conteudoBean.perfilParaVisistar.descricao}" 
+                                   class="descricao"/>
+                </center>
+            </p:panel>
+        </center>
+        
+        <p:spacer height="40"/>
+        
+        <p:dataScroller chunkSize="10" var="conteudo" value="#{conteudoBean.perfil()}">
+            <ui:include src="../WEB-INF/paginas/conteudo.xhtml"/>
+        </p:dataScroller>
+        
+        <ui:include src="../WEB-INF/paginas/opcoes_conteudo_comentario.xhtml"/>
+        
+        <ui:include src="../WEB-INF/paginas/menu_lateral.xhtml"/>
+    </h:body>
+</html>

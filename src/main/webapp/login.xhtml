@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Bem-vindo a versão beta do Ippie</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+        <style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;color: white!important}
+            a{color: white !important;}
+            h6{color: white !important;}
+            label{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}
+        </style>
+        
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{indexBean.registraVisitante()}"/>
+        </f:metadata>
+    </h:head>
+    <h:body class="fundo">
+        
+        <p:panel class="semBorda">
+            <f:facet name="header">
+                <center>
+                    <p:graphicImage value="imagens/logo.png" height="140"/>
+                    <br/>
+                    <div style="font-weight: bolder">Estão falando do que você 
+                        não quer saber? Aqui, você pode filtrar tudo<br/> aquilo que não quer ver,
+                    não sendo bombardeado com aquele assunto<br/> do momento que
+                    você não está nem aí. Junte-se ao Ippie!</div>
+                </center>
+            </f:facet>
+            
+<div style="width: 100%;text-align: center;">
+                    <div style="display: inline-block;">
+                        <div class="circulo" id="esquerda">
+                            <div class="vertical">
+                                <center>
+                                    <h:form id="frmLoginCadastro">
+                                        <p:growl id="grwLoginCadastro" showDetail="true"/>
+                                        <p:panelGrid columns="2" styleClass="ui-noborder">
+                                            <f:facet name="header">
+                                                <label>
+                                                Cadastre-se! É de graça!
+                                                </label>
+                                            </f:facet>
+                        
+                                            <p:outputLabel value="Nome: "/>
+                                            <p:inputText value="#{cadastroBean.nome}"
+                                                         validatorMessage="O nome deve ter no mínimo 3 caracteres e no máximo 30."
+                                                         required="true" maxlength="30" 
+                                                         requiredMessage="Digite o seu nome!">
+                                                <f:validateLength minimum="3"/>
+                                            </p:inputText>
+                         
+                                            <p:outputLabel value="Sobrenome: "/>
+                                            <p:inputText value="#{cadastroBean.sobrenome}"
+                                                         validatorMessage="O sobrenome deve ter no mínimo 3 caracteres e no máximo 30."
+                                                         required="true" maxlength="30" 
+                                                         requiredMessage="Digite o seu sobrenome!">
+                                                <f:validateLength minimum="3"/>
+                                            </p:inputText>
+                        
+                                            <p:outputLabel value="Email: "/>
+                                            <p:inputText value="#{cadastroBean.email}"
+                                                         validatorMessage="O email deve ter no mínimo 3 caracteres e no máximo 254."
+                                                         required="true" maxlength="254" 
+                                                         requiredMessage="Digite um email!">
+                                                <f:validateLength minimum="3"/>
+                                            </p:inputText>
+                        
+                                            <p:outputLabel value="Senha: "/>
+                                            <p:password value="#{cadastroBean.senha}"
+                                                        validatorMessage="A senha deve ter no mínimo 8 caracteres e no máximo 40."
+                                                        required="true" maxlength="40"
+                                                        requiredMessage="Digite uma senha!">
+                                                <f:validateLength minimum="8"/>
+                                            </p:password>
+                        
+                                            <f:facet name="footer">
+                                                <div class="center">
+                                                    <p:commandButton value="Criar uma conta" 
+                                                                     update="grwLoginCadastro @form"
+                                                                     action="#{cadastroBean.cadastroParte1()}"/>
+                                                    
+                                                    <h6>Ao clicar em "Criar uma conta", você declara que
+                                                    <br/>leu e concorda com os nossos
+                                                    <p:link value="termos de uso" outcome="termos_de_uso"
+                                                            style="color:darkblue !important"/>.</h6>
+                                                </div>
+                                            </f:facet>
+                                        </p:panelGrid>
+                                    </h:form>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="display: inline-block;">
+                        <div class="circulo" id="direita">
+                            <div class="vertical">
+                                <center>
+                                    <h:form id="frmLoginAcesso">
+                                        <p:growl id="grwLoginAcesso" showDetail="true"/>
+                                        <p:focus for="loginEmail"/>
+                                        <p:panelGrid columns="2" styleClass="ui-noborder">
+                                            <f:facet name="header">
+                                                <label>
+                                                Acesse o seu perfil
+                                                </label>
+                                            </f:facet>
+                            
+                                            <p:outputLabel value="Email: "/>
+                                            <p:inputText value="#{loginBean.email}" id="loginEmail"
+                                                         required="true" maxlength="254"
+                                                         requiredMessage="Digite um email!"/>
+                            
+                                            <p:outputLabel value="Senha: "/>
+                                            <p:password value="#{loginBean.senha}"
+                                                        required="true" maxlength="50"
+                                                        requiredMessage="Digite uma senha!"/>
+                                            
+                                            <p:outputPanel/>
+                                            <!--<p:commandLink value="Esqueci a minha senha"/>-->
+                            
+                                            <f:facet name="footer">
+                                                <div class="center">
+                                                    <p:commandButton value="Entrar" update="grwLoginAcesso @form"
+                                                                     action="#{loginBean.login()}"/>
+                                                </div>
+                                            </f:facet>
+                                        </p:panelGrid>
+                                    </h:form>
+                                </center>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            
+            <f:facet name="footer">
+                <center>
+                    <p:link value="Agradecimentos" outcome="agradecimento"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Termos de uso" outcome="termos_de_uso"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Contato e sugestões" outcome="contato"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="O que é o Ippie?" outcome="o_que_e_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Quer trabalhar no Ippie?" outcome="trabalhar_no_ippie"/>
+                </center>
+            </f:facet>
+        </p:panel>
+    </h:body>
+</html>

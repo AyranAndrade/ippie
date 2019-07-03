@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Denúncias - #{usuarioBean.usuario().nomeCompleto}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" 
+              href="#{facesContext.externalContext.requestContextPath}/css/desktop.css" 
+              media="screen"/>
+        <style>
+            .ui-panelgrid .ui-panelgrid-cell{border-width: 0px;border-style: none;}
+            .ui-widget-content {background: #fff}
+            .ui-datalist-content{border: none}
+            .ui-datalist-data li{display: inline;padding-right: 20px;}
+        </style>
+    </h:head>
+    <h:body class="fundo">
+        <ui:include src="../WEB-INF/paginas/barra_superior.xhtml"/>
+        
+        <p:tabView orientation="top" dynamic="true">
+            <p:tab title="Conteúdo">
+                <p:dataScroller chunkSize="10" var="conteudo" value="#{denunciaBean.conteudos()}">
+                    <center>
+                        <p:panelGrid columns="1" id="pnlDenunciaConteudo">
+                            <p:outputLabel value="#{conteudo.texto}" rendered="#{not empty conteudo.texto}"/>
+                            <p:graphicImage value="#{configuracaoBean.fotoOuVideoConteudo()}#{conteudo.urlImagem}"
+                                            rendered="#{not empty conteudo.urlImagem}"/>
+                            <p:link value="#{conteudo.urlLink}" href="http://#{conteudo.urlLink}"
+                                    rendered="#{not empty conteudo.urlLink}"/>
+                            <p:outputPanel rendered="#{not empty conteudo.urlVideo}">
+                                <video width="420" height="315" controls="controls">
+                                    <source src="#{configuracaoBean.fotoOuVideoConteudo()}#{conteudo.urlVideo}"
+                                            type="video/#{conteudo.extensaoVideo}"/>
+                                        Seu navegador não suporta HTML 5.
+                                </video>
+                            </p:outputPanel>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:commandButton value="Aprovar denúncia"
+                                                     actionListener="#{denunciaBean.aprovaDenuncia(conteudo)}" 
+                                                     rendered="#{denunciaBean.denunciaAindaDeveSerVerificada(conteudo)}"/>
+                                    
+                                    <p:commandButton value="Rejeitar denúncia"
+                                                     actionListener="#{denunciaBean.rejeitaDenuncia(conteudo)}"
+                                                     rendered="#{denunciaBean.denunciaAindaDeveSerVerificada(conteudo)}"/>
+                                    
+                                    <p:outputLabel value="Denúncia já foi averiguada." 
+                                                   rendered="#{not denunciaBean.denunciaAindaDeveSerVerificada(conteudo)}"/>
+                                </center>
+                            </f:facet>
+                        </p:panelGrid>
+                    </center>
+                    <p:spacer height="50"/>
+                </p:dataScroller>
+            </p:tab>
+            <p:tab title="Assunto">
+                <p:dataScroller chunkSize="10" var="assunto" value="#{denunciaBean.assuntos()}">
+                    <center>
+                        <p:panelGrid columns="1" id="pnlDenunciaAssunto">
+                            <p:outputLabel value="#{assunto.nome}"/>
+                            <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto.urlImagem}"
+                                            height="100"/>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:commandButton value="Aprovar denúncia"
+                                                     actionListener="#{denunciaBean.aprovaDenuncia(assunto)}" 
+                                                     rendered="#{denunciaBean.denunciaAindaDeveSerVerificada(assunto)}"/>
+                                    
+                                    <p:commandButton value="Rejeitar denúncia"
+                                                     actionListener="#{denunciaBean.rejeitaDenuncia(assunto)}"
+                                                     rendered="#{denunciaBean.denunciaAindaDeveSerVerificada(assunto)}"/>
+                                    
+                                    <p:outputLabel value="Denúncia já foi averiguada." 
+                                                   rendered="#{not denunciaBean.denunciaAindaDeveSerVerificada(assunto)}"/>
+                                </center>
+                            </f:facet>
+                        </p:panelGrid>
+                    </center>
+                    <p:spacer height="20"/>
+                </p:dataScroller>                
+            </p:tab>
+        </p:tabView>
+    </h:body>
+</html>

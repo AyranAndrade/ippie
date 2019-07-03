@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Ippie - #{usuarioBean.usuario().nomeCompleto}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" 
+              href="#{facesContext.externalContext.requestContextPath}/css/desktop.css" 
+              media="screen"/>
+    </h:head>
+    <h:body class="fundo">
+        <ui:include src="../WEB-INF/paginas/barra_superior.xhtml"/>
+        
+        <ui:include src="../WEB-INF/paginas/menu_lateral.xhtml"/>
+        
+        <ui:include src="../WEB-INF/paginas/opcoes_conteudo_comentario.xhtml"/>
+        
+        <p:tabView orientation="top" id="tbvConfiguracao">
+            <p:tab title="Aparência">
+                <p:panelGrid columns="2" styleClass="ui-noborder">
+                    <p:graphicImage value="#{configuracaoBean.fotoPerfil()}#{usuarioBean.usuario().fotoPerfil}"
+                                    id="grpConfiguracaoFotoPerfil"/>
+                    <p:graphicImage value="#{configuracaoBean.fotoCabecalho()}#{usuarioBean.usuario().fotoCabecalho}"
+                                    id="grpConfiguracaoFotoCabecalho"/>
+                    <p:commandButton value="Mudar foto de perfil" update="frmMudarFotoPerfil"
+                                     oncomplete="PF('dlgMudarFotoPerfil').show()"/>
+                    <p:commandButton value="Mudar foto de cabeçalho" update="frmMudarFotoCabecalho"
+                                     oncomplete="PF('dlgMudarFotoCabecalho').show()"/>
+                </p:panelGrid>
+            </p:tab>
+            
+            <p:tab title="Social">
+                <h:form>
+                    <p:growl id="grwConfiguracaoSocial" showDetail="true"/>
+                    <p:panelGrid columns="7" styleClass="ui-noborder">
+                        <p:outputLabel value="Nome:"/>
+                        <p:inputText value="#{cadastroBean.nome}" maxlength="30"
+                                     required="true"/>
+                        
+                        <p:outputLabel value="Sobrenome:"/>
+                        <p:inputText value="#{cadastroBean.sobrenome}" maxlength="30"
+                                     required="true"/>
+                        
+                        <p:outputLabel value="Descrição:"/>
+                        <p:inputTextarea value="#{cadastroBean.descricao}"
+                                         maxlength="200" cols="40"/>
+                        
+                        <p:commandButton value="Salvar alterações" update="grwConfiguracaoSocial @form"
+                                         actionListener="#{cadastroBean.editaSocial()}"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:tab>
+            
+            <p:tab title="Segurança">
+                <h:form>
+                    <p:growl id="grwConfiguracaoSeguranca" showDetail="true"/>
+                    <p:panelGrid columns="7" styleClass="ui-noborder">
+                        <p:outputLabel value="Senha atual:"/>
+                        <p:password value="#{loginBean.velhaSenha}"/>
+                        
+                        <p:outputLabel value="Nova senha:"/>
+                        <p:password match="confirmarSenha" feedback="true" 
+                                    promptLabel="Por favor, digite uma senha" 
+                                    weakLabel="Fraco" goodLabel="Bom" maxlength="40"
+                                    strongLabel="Forte" value="#{loginBean.novaSenha}"
+                                    validatorMessage="A nova senha é diferente da digitada no campo 'Repita a nova senha'"/>
+                        
+                        <p:outputLabel value="Repita a nova senha:"/>
+                        <p:password id="confirmarSenha" value="#{loginBean.novaSenha}"
+                                    maxlength="40"/>
+                    
+                        <p:commandButton value="Mudar a senha" update="grwConfiguracaoSeguranca @form"
+                                         actionListener="#{loginBean.mudaSenha()}"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:tab>
+        </p:tabView>
+        
+        <p:dialog closable="true" closeOnEscape="true" header="Mudar foto de perfil"
+                  modal="true" widgetVar="dlgMudarFotoPerfil" position="left top">
+            <p:ajax event="close" listener="#{cadastroBean.anulaFotoPerfil}"/>
+            <h:form enctype="multipart/form-data">
+                <p:fileUpload fileUploadListener="#{cadastroBean.editaFotoPerfil}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG." 
+                              update="frmMudarFotoPerfil"
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152" auto="true" label="Escolher"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/"/>                
+            </h:form>
+            <h:form id="frmMudarFotoPerfil">
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:imageCropper initialCoords="0,0,200,200" aspectRatio="1"
+                                    value="#{cadastroBean.imagemFotoPerfil}"
+                                    image="http://www.ippie.com.br/perfil/#{cadastroBean.fotoPerfil}"/>
+                    <p:commandButton value="Mudar foto de perfil" actionListener="#{cadastroBean.salvaFotoPerfil()}"
+                                     update="tbvConfiguracao:grpConfiguracaoFotoPerfil @form"
+                                     oncomplete="PF('dlgMudarFotoPerfil').hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog closable="true" closeOnEscape="true" header="Mudar foto de cabeçalho"
+                  modal="true" widgetVar="dlgMudarFotoCabecalho" position="left top">
+            <p:ajax event="close" listener="#{cadastroBean.anulaFotoCabecalho}"/>
+            <h:form enctype="multipart/form-data">
+                <p:fileUpload fileUploadListener="#{cadastroBean.editaFotoCabecalho}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG." 
+                              update="frmMudarFotoCabecalho"
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152" auto="true" label="Escolher"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/"/>                
+            </h:form>
+            <h:form id="frmMudarFotoCabecalho"> <!-- o tamanho da foto é 1060 x 270. 1060/270=3.925 -->
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:imageCropper initialCoords="0,0,200,200" aspectRatio="3.925" 
+                                    value="#{cadastroBean.imagemFotoCabecalho}"
+                                    image="http://www.ippie.com.br/cabecalho/#{cadastroBean.fotoCabecalho}"/>
+                    <p:commandButton value="Mudar foto de cabeçalho" actionListener="#{cadastroBean.salvaFotoCabecalho()}"
+                                     update="tbvConfiguracao:grpConfiguracaoFotoCabecalho @form"
+                                     oncomplete="PF('dlgMudarFotoCabecalho').hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>        
+        
+    </h:body>
+</html>

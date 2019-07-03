@@ -1,0 +1,155 @@
+/* 
+    Created on : 18/09/2015, 11:42:52
+    Author     : Ayran
+*/
+
+a
+{
+text-decoration: none;
+}
+
+.center
+{
+margin-left: auto;
+margin-right: auto;
+text-align: center;
+}
+
+.circulo
+{
+width:450px;
+height:450px;
+border-radius:50%;
+background: #035c59;
+display: table;
+//círculos do login. NÃO MEXER
+}
+
+.vertical
+{
+display: table-cell;
+vertical-align: middle;
+//círculos do login. NÃO MEXER
+}
+
+.verdeClaro
+{
+background: #035c59 !important;
+//deixa o rodapé do login verde.
+}
+
+#esquerda
+{
+float: left;
+overflow: hidden;
+margin-right: 140px;
+//círculos do login. NÃO MEXER
+}
+
+#direita
+{
+overflow: hidden; 
+margin: 0 auto;
+//círculos do login. NÃO MEXER
+}
+
+.ui-widget-header 
+{
+background: transparent;
+//deixa o "Cadastre-se! É de graça!" e o "Acesse o seu perfil" transparentes
+}
+
+a:hover
+{
+text-decoration: underline;    
+//deixa os links sublinhados
+}
+
+#nome
+{
+color: black;    
+font-size: 23px;    
+font-weight: bold;    
+background:rgba(255,255,255, 0.5);
+//se eu deixar isto aqui como uma classe, o tamanho da fonte fica pequeno,
+//inexplicavelmente, não importando o tamanho que você coloque.
+}
+
+.estiloConteudo
+{
+width: 70%;
+background: #fff;    
+}
+
+.barraSuperior
+{
+background: #C4C4C4 -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)) repeat scroll 0% 0%;
+background: #C4C4C4 -webkit-linear-gradient(center top , rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)) repeat scroll 0% 0%;
+background: #C4C4C4 -o-linear-gradient(center top , rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)) repeat scroll 0% 0%;
+background: #C4C4C4 linear-gradient(center top , rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)) repeat scroll 0% 0%;
+}
+
+.ui-datascroller, .ui-datascroller-content
+{
+background: transparent !important;
+//deixa o fundo do datascroller transparente, para poder aparecer a cor de fundo
+}
+
+.semBorda
+{
+border: none;
+}
+
+.cabecalho
+{
+height:270px;
+width:1060px;
+}
+
+.descricao
+{
+font-weight:bold;
+background:rgba(255,255,255,0.5);
+}
+
+.fundo
+{
+background: #87afae !important;
+
+/*
+Facebook=#E9EAED
+Antigo=#D3D8E8
+Antigo mas melhor=#D7D7D7
+Isabela=#FFFAFA
+*/
+}
+
+a img:hover
+{
+//border:solid #000;
+}
+
+.panelGridCenter
+{
+margin: 0 auto;
+}
+
+.conteudoPanelGridCenter td, .conteudoPanelGridCenter tr 
+{
+text-align: center;
+}
+
+input[type=text], input[type=password], textarea
+{
+background: #fff !important;
+color: #000 !important;
+}
+
+.ui-autocomplete-multiple-container
+{
+background: white !important;    
+}

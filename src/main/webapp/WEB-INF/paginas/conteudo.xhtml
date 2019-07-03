@@ -1,0 +1,151 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+    <center>
+        <p:panelGrid columns="2" id="conteudo" class="estiloConteudo">
+            
+            <p:panelGrid columns="1" styleClass="ui-noborder">
+                
+                <p:commandLink actionListener="#{conteudoBean.setPerfilParaVisistar(conteudo.autor)}">
+                    <f:actionListener binding="#{conteudoBean.redirecionaPerfil()}"/>
+                    <p:graphicImage value="#{configuracaoBean.fotoPerfil()}#{conteudo.autor.fotoPerfil}"
+                                    width="100" style="border-radius: 50%"/>
+                </p:commandLink>
+                            
+                <p:commandLink actionListener="#{conteudoBean.setPerfilParaVisistar(conteudo.autor)}"
+                               value="#{conteudo.autor.nomeCompleto}">
+                    <f:actionListener binding="#{conteudoBean.redirecionaPerfil()}"/>
+                </p:commandLink>
+                
+                <p:outputLabel value="#{conteudo.dataEHoraFormatada()}"/>
+            
+                <h:form>
+                    <p:menuButton value="Opções">
+                        <p:menuitem value="Editar conteúdo" rendered="#{conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{conteudoBean.setConteudoParaEditar(conteudo)}"
+                                    update="frmEditarConteudo"
+                                    oncomplete="PF('dlgEditarConteudo').show()"/>
+                                
+                        <p:menuitem value="Excluir conteúdo" rendered="#{conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{conteudoBean.setConteudoParaExcluir(conteudo)}"
+                                    oncomplete="PF('cnfExcluirConteudo').show()"/>
+                                
+                        <p:menuitem value="Denunicar conteúdo"
+                                    rendered="#{not conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{denunciaBean.setConteudoParaDenunciar(conteudo)}"
+                                    oncomplete="PF('cnfDenunciarConteudo').show()"/>
+                                
+                        <p:menuitem value="Denunicar assunto" update="frmDenunciarAssunto:dttDenunciarAssunto"
+                                    rendered="#{not conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{denunciaBean.setConteudoParaDenunciar(conteudo)}"
+                                    oncomplete="PF('dlgDenunciarAssunto').show()"/>
+                                
+                        <p:menuitem value="Bloquear conteúdo"
+                                    rendered="#{not conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{usuarioBean.setConteudoParaBloquear(conteudo)}"
+                                    oncomplete="PF('cnfBloquearConteudo').show()"/>
+                                
+                        <p:menuitem value="Bloquear autor do conteúdo" 
+                                    rendered="#{not conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{usuarioBean.setUsuarioParaBloquear(conteudo.autor)}"
+                                    oncomplete="PF('cnfBloquearUsuario').show()"/>
+                                
+                        <p:menuitem value="Bloquear assunto" update="frmBloquearAssunto:dttBloquearAssunto"
+                                    rendered="#{not conteudoBean.ehAutorDoConteudo(conteudo)}"
+                                    actionListener="#{usuarioBean.setConteudoParaBloquear(conteudo)}"
+                                    oncomplete="PF('dlgBloquearAssunto').show()"/>
+                    </p:menuButton>
+                </h:form>
+            
+            </p:panelGrid>
+                    
+            <p:panelGrid columns="1" styleClass="ui-noborder">
+                <p:outputLabel value="#{conteudo.texto}" rendered="#{not empty conteudo.texto}"/>
+                <p:graphicImage value="#{configuracaoBean.fotoOuVideoConteudo()}#{conteudo.urlImagem}"
+                                rendered="#{not empty conteudo.urlImagem}"/>
+                <p:link value="#{conteudo.urlLink}" href="http://#{conteudo.urlLink}"
+                        rendered="#{not empty conteudo.urlLink}"/>
+                <p:outputPanel rendered="#{not empty conteudo.urlVideo}">
+                    <video width="420" height="315" controls="controls">
+                        <source src="#{configuracaoBean.fotoOuVideoConteudo()}#{conteudo.urlVideo}"
+                                type="video/#{conteudo.extensaoVideo}"/>
+                        Seu navegador não suporta HTML 5.
+                    </video>
+                </p:outputPanel>
+                <p:separator/>
+                <f:facet name="footer">
+                    <center>
+                        <p:dataList value="#{conteudo.assuntos}" var="assunto"
+                                    emptyMessage="Nenhum assunto encontrado.">
+                            <p:commandLink value="#{assunto.nome}" 
+                                           actionListener="#{assuntoBean.setAssunto(assunto)}"/>
+                        </p:dataList>
+                    </center>
+                </f:facet>
+            </p:panelGrid>
+                    
+            <f:facet name="footer">
+                <center>
+                    <p:commandButton value="Aprovar (#{conteudoBean.quantasAprovacoes(conteudo)})"
+                                     action="#{conteudoBean.aprova(conteudo)}" update="conteudo" icon="ui-icon-plusthick"
+                                     rendered="#{conteudoBean.conteudoNormal(conteudo) and !conteudoBean.estaAprovado(conteudo)}"/>
+                           
+                    <p:commandButton value="Retirar aprovação (#{conteudoBean.quantasAprovacoes(conteudo)})"
+                                     action="#{conteudoBean.retiraAprovacao(conteudo)}" update="conteudo" icon="ui-icon-plusthick"
+                                     rendered="#{conteudoBean.conteudoNormal(conteudo) and conteudoBean.estaAprovado(conteudo)}"/>
+                           
+                    <p:commandButton value="Concordar (#{conteudoBean.quantosConcordar(conteudo)})"
+                                     action="#{conteudoBean.concorda(conteudo)}" update="conteudo" icon="ui-icon-circle-check"
+                                     rendered="#{conteudoBean.conteudoSobreOpiniao(conteudo) and !conteudoBean.estaConcordado(conteudo)}"/>
+                            
+                    <p:commandButton value="Não concordo mais (#{conteudoBean.quantosConcordar(conteudo)})"
+                                     action="#{conteudoBean.retiraConcordar(conteudo)}" update="conteudo" icon="ui-icon-circle-check"
+                                     rendered="#{conteudoBean.conteudoSobreOpiniao(conteudo) and conteudoBean.estaConcordado(conteudo)}"/>
+                            
+                    <p:spacer width="50" height="0"/>
+                            
+                    <p:commandButton value="Reprovar (#{conteudoBean.quantasReprovacoes(conteudo)})"
+                                     action="#{conteudoBean.reprova(conteudo)}" update="conteudo" icon="ui-icon-minusthick"
+                                     rendered="#{conteudoBean.conteudoNormal(conteudo) and !conteudoBean.estaReprovado(conteudo)}"/>
+                            
+                    <p:commandButton value="Retirar reprovação (#{conteudoBean.quantasReprovacoes(conteudo)})"
+                                     action="#{conteudoBean.retiraReprovacao(conteudo)}" update="conteudo" icon="ui-icon-minusthick"
+                                     rendered="#{conteudoBean.conteudoNormal(conteudo) and conteudoBean.estaReprovado(conteudo)}"/>
+                            
+                    <p:commandButton value="Discordar (#{conteudoBean.quantosDiscordar(conteudo)})"
+                                     action="#{conteudoBean.discorda(conteudo)}" update="conteudo" icon="ui-icon-circle-close"
+                                     rendered="#{conteudoBean.conteudoSobreOpiniao(conteudo) and !conteudoBean.estaDiscordado(conteudo)}"/>
+                            
+                    <p:commandButton value="Não discordo mais (#{conteudoBean.quantosDiscordar(conteudo)})"
+                                     action="#{conteudoBean.retiraDiscordar(conteudo)}" update="conteudo" icon="ui-icon-circle-close"
+                                     rendered="#{conteudoBean.conteudoSobreOpiniao(conteudo) and conteudoBean.estaDiscordado(conteudo)}"/>
+                            
+                    <p:commandButton value="Desejar pêsames (#{conteudoBean.quantosPesames(conteudo)})"
+                                     action="#{conteudoBean.pesame(conteudo)}" update="conteudo"
+                                     rendered="#{conteudoBean.conteudoSobreMorte(conteudo) and !conteudoBean.estaComPesame(conteudo)}"/>
+                            
+                    <p:commandButton value="Retirar pêsames (#{conteudoBean.quantosPesames(conteudo)})"
+                                     action="#{conteudoBean.retiraPesame(conteudo)}" update="conteudo"
+                                     rendered="#{conteudoBean.conteudoSobreMorte(conteudo) and conteudoBean.estaComPesame(conteudo)}"/>
+                            
+                    <p:spacer width="50" height="0"/>
+                            
+                    <p:commandButton value="Comentários (#{conteudoBean.quantosComentarios(conteudo)})"
+                                     actionListener="#{conteudoBean.comentarios(conteudo)}"
+                                     icon="ui-icon-comment" update="listaComentarios"
+                                     oncomplete="PF('vrlComentarios').show('#{component.clientId}');">
+                        <f:setPropertyActionListener value="#{conteudo}" target="#{conteudoBean.conteudoParaComentario}"/>
+                        <f:setPropertyActionListener value="#{component.clientId}" target="#{conteudoBean.idBotaoComentario}"/>
+                    </p:commandButton>
+                </center>
+            </f:facet>
+        </p:panelGrid>
+    </center>
+            
+    <p:spacer height="100"/>
+        
+</ui:composition>

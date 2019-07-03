@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Parte final do cadastro</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" 
+              href="#{facesContext.externalContext.requestContextPath}/css/desktop.css" 
+              media="screen"/>
+    </h:head>
+    <h:body class="fundo">
+        <script type="text/javascript">
+            function handleDrop(event, ui) 
+            {
+            var droppedCar = ui.draggable;
+            droppedCar.fadeOut('fast');
+            }
+        </script>     
+        
+        <h:form id="frmCadastroParte3">
+            <p:growl id="grwCadastroParte3" showDetail="true"/>
+        </h:form>
+        
+        <h:form>
+            <p:remoteCommand name="rmtAtualizaCadastroParte3" autoRun="true"
+                             update="dtgCadastroParte3AssuntosDisponiveis"
+                             actionListener="#{assuntoBean.inicia()}"/>
+        </h:form>
+        
+        <p:spacer height="40"/>
+        
+        <center>
+            <p:panelGrid columns="2">
+                <f:facet name="header">
+                    <center>
+                        <p:commandButton value="Voltar para o início" action="login"/>
+                        <p:spacer width="40"/>
+                        <p:commandButton value="Finalizar o cadastro" 
+                                         actionListener="#{cadastroBean.cadastroParte2(assuntoBean.assuntosParaCadastro)}" 
+                                         update="frmCadastroParte3:grwCadastroParte3"/>
+                    </center>
+                    
+                    <p:spacer height="20"/>
+                </f:facet>
+            
+                <p:dataGrid rows="12" id="dtgCadastroParte3AssuntosDisponiveis"
+                            var="assunto" value="#{assuntoBean.pesquisa}" 
+                            emptyMessage="Nenhuma assunto encontrado.">
+                    <f:facet name="header">
+                        <h:form>
+                            <p:panelGrid columns="2" styleClass="ui-noborder">
+                                <f:facet name="header">
+                                    Pesquise por assuntos interessantes para você. 
+                                    <br/>
+                                    Apague todo a pesquisa e clique em "Pesquisar"
+                                    <br/>
+                                    para voltar a pesquisa original.
+                                </f:facet>
+                            
+                                <p:inputText placeholder="Nome do assunto" 
+                                             value="#{assuntoBean.nome}" maxlength="30"/>
+                                <p:commandButton value="Pesquisar" 
+                                                 update="dtgCadastroParte3AssuntosDisponiveis @form"
+                                                 actionListener="#{assuntoBean.pesquisaAssuntosPeloNome()}"/>
+                            </p:panelGrid>
+                        </h:form>
+                    </f:facet>
+                                
+                    <p:panelGrid columns="1" id="cadaAssuntoCadastro">
+                        <f:facet name="header">
+                            <p:outputLabel value="#{assunto.nome}"/>
+                        </f:facet>
+                        <p:graphicImage value="#{configuracaoBean.fotoAssuntoCadastro()}#{assunto.urlImagem}"/>
+                    </p:panelGrid>
+                        
+                    <p:draggable for="cadaAssuntoCadastro" revert="true" stack=".ui-panel"/>
+
+                </p:dataGrid>
+                    
+                <p:fieldset legend="Seus assuntos favoritos" id="fldCadastroParte3AssuntosSelecionados">
+                    <p:outputPanel id="tptCadastroParte3AssuntosSelecionados">
+                    
+                        <p:dataGrid rows="12" var="assunto2" value="#{assuntoBean.assuntosParaCadastro}"
+                                    emptyMessage="Arraste e solte aqui os assuntos que você acha interessante.">
+                            <p:panelGrid columns="1">
+                                <f:facet name="header">
+                                    <p:outputLabel value="#{assunto2.nome}"/>
+                                </f:facet>
+                           
+                                <p:graphicImage value="#{configuracaoBean.fotoAssuntoCadastro()}#{assunto2.urlImagem}"/>
+                            
+                                <f:facet name="footer">
+                                    <p:commandButton value="Excluir" actionListener="#{assuntoBean.onAssuntoExcludeCadastro(assunto2)}"
+                                                     update="tptCadastroParte3AssuntosSelecionados dtgCadastroParte3AssuntosDisponiveis"/>
+                                </f:facet>
+                            </p:panelGrid>
+                            
+                        </p:dataGrid>
+                    </p:outputPanel>
+                </p:fieldset>
+                    
+                <p:droppable for="fldCadastroParte3AssuntosSelecionados" tolerance="touch" 
+                             activeStyleClass="ui-state-highlight" onDrop="handleDrop"
+                             datasource="dtgCadastroParte3AssuntosDisponiveis">
+                    <p:ajax listener="#{assuntoBean.onAssuntoDropCadastro}" 
+                            update="tptCadastroParte3AssuntosSelecionados dtgCadastroParte3AssuntosDisponiveis frmCadastroParte3:grwCadastroParte3"/>
+                </p:droppable>
+                    
+            </p:panelGrid>
+        </center>
+    </h:body>        
+</html>

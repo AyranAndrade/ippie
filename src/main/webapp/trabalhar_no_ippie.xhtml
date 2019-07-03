@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Quer trabalhar no Ippie?</title>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+<style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;}
+            a{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}
+        </style>        
+    </h:head>
+    <h:body class="fundo">
+        <p:panel>
+            <f:facet name="header">
+                <center>
+                    <p:link outcome="login">
+                        <p:graphicImage value="imagens/logo.png" height="200"/>
+                    </p:link>
+                    <br/>
+                    <div style="font-weight: bolder">Para trabalhar nesta startup, 
+                        você precisa respeitar os princípios do Ippie.</div>
+                </center>
+            </f:facet>
+            
+            <center>
+                    <h:form>
+                        <p:growl id="grwTrabalharNoIppie" showDetail="true"/>
+                        
+                        <p:panelGrid columns="2" styleClass="ui-noborder">
+                            <f:facet name="header">
+                                Preencha o formulário complicadíssimo abaixo,<br/>
+                                que entraremos em contato com você via email.
+                            </f:facet>
+                            
+                            <p:inputText placeholder="Seu nome completo" required="true" maxlength="60"
+                                         value="#{avulsoBean.nomeCandidato}"
+                                         requiredMessage="Nós precisamos do seu nome!"/>
+                            
+                            <p:inputText placeholder="Seu email" required="true" maxlength="254"
+                                         value="#{avulsoBean.emailCandidato}"
+                                         requiredMessage="Nós precisamos do seu email!"/>
+                            
+                            <p:inputTextarea maxlength="500" required="true" rows="5" 
+                                             value="#{avulsoBean.motivacaoCandidato}"
+                                             placeholder="Por que você quer trabalhar no Ippie?"
+                                             requiredMessage="Não tente submeter uma candidatura sem ter uma motivação."/>
+                            
+                            <f:facet name="footer">
+                                <center>
+                                    <p:commandButton value="Quero trabalhar no Ippie!" update="grwTrabalharNoIppie @form"
+                                                     actionListener="#{avulsoBean.adicionaCandidatura()}"/>
+                                </center>
+                            </f:facet>
+                        </p:panelGrid>
+                    </h:form>
+                    
+                    <p:spacer height="40"/>
+                    
+                    <div style="font-weight: bolder">Quais são os nossos princípios?</div>
+                    <p>Se você resolve os nossos problemas, então nós resolvemos os seus.</p>
+                    <p>
+Nós não nos importamos com o horário que você entra, nem com o horário em que você vai embora. Se não quiser ir na empresa, tudo bem. Também não nos importamos com as roupas que você usa, nem pra quem você é, como você é, ou o que gosta de fazer. Não estamos nem aí se você se formou em Harvard com louvor, ou se nunca estudou. Não ligamos, nem mesmo, para o quanto você vai ganhar.
+</p>
+                    <p>
+A única coisa que importa é: Você resolve os nossos problemas?</p>
+                    <p>
+Você é uma pessoa que consegue "pensar fora da caixa"? Você pode ser uma pessoa que "respira inovação"?
+</p>
+                    <p>
+É claro que o quanto você vai ganhar é diretamente proporcional a quantidade de problemas que você pode resolver, e também às suas responsabilidades.
+</p>
+                    <p>
+No Ippie, nós não toleramos pessoas racistas, homofóbicas, machistas, sexistas, femistas, misóginas, misândricas, gordofóbica, intolerantes religiosamente e preconceituosas no geral. Se você se encaixa em qualquer um dos títulos anteriores, por favor, nem entre no Ippie, muito menos se candidate a uma vaga em nossa empresa. Em resumo, gostamos de pessoas que saibam tratar bem o(a) "coleguinha" do lado.
+                    </p>
+                </center>
+            
+            <f:facet name="footer">
+                <center>
+                    <p:link value="Agradecimentos" outcome="agradecimento"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Termos de uso" outcome="termos_de_uso"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Contato e sugestões" outcome="contato"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Quer trabalhar no Ippie?" outcome="trabalhar_no_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="O que é o Ippie?" outcome="o_que_e_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Login" outcome="login"/>
+                </center>
+            </f:facet>
+        </p:panel>
+    </h:body>
+</html>

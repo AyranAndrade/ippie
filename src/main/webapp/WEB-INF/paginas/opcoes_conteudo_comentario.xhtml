@@ -1,0 +1,435 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <p:tooltip showDelay="350"/>
+
+    <h:form id="frmConteudoGrowl">
+        <p:growl id="grwConteudo" showDetail="true"/>
+    </h:form>
+        
+    <p:overlayPanel dynamic="true" hideEffect="explode" showCloseIcon="true"
+                    showEvent="fade" widgetVar="vrlComentarios">
+        
+        <h:form enctype="multipart/form-data" id="frmComentario">
+            <p:panelGrid columns="4" styleClass="ui-noborder">
+                <p:inputTextarea rows="1" value="#{conteudoBean.comentario}" 
+                                 id="textoComentario" maxlength="200"/>
+                <p:fileUpload fileUploadListener="#{conteudoBean.fotoComentario}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG." update="msgComentario"
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152" auto="true" label="Escolher"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/"/>
+                <p:outputPanel id="msgComentario">
+                    <p:outputLabel value="Foto inserida!"
+                                   rendered="#{conteudoBean.upouFotoComentario()}"/>
+                </p:outputPanel>
+                <p:commandButton value="Comentar" onclick="PF('vrlComentarios').hide()"
+                                 update="frmConteudoGrowl:grwConteudo @form"
+                                 actionListener="#{conteudoBean.comenta()}"/>
+            </p:panelGrid>
+        </h:form>
+        
+        <p:outputPanel  id="listaComentarios">
+            <p:dataList value="#{conteudoBean.conteudoParaComentario.comentarios}"
+                        rows="5" var="comentario" type="definition"
+                        emptyMessage="Não há comentários para exibir."
+                        paginator="true" paginatorAlwaysVisible="false">
+                <p:panelGrid columns="3" styleClass="ui-noborder">
+                    <p:commandLink actionListener="#{conteudoBean.setPerfilParaVisistar(comentario.autor)}"
+                                   value="#{comentario.autor.nomeCompleto}">
+                        <f:actionListener binding="#{conteudoBean.redirecionaPerfil()}"/>
+                    </p:commandLink>
+                    <p:panelGrid columns="1" styleClass="ui-noborder">
+                        <p:outputLabel value="#{comentario.texto}" rendered="#{comentario.texto!=null}"/>
+                        <p:graphicImage value="#{configuracaoBean.fotoComentario()}#{comentario.urlImagem}"
+                                        rendered="#{comentario.urlImagem!=null}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="1" styleClass="ui-noborder">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dlgEditarComentario').show()"
+                                         update="frmEditarComentario" title="Editar comentário"
+                                         rendered="#{conteudoBean.ehAutorDoComentario(comentario)}"
+                                         actionListener="#{conteudoBean.setComentarioParaEditar(comentario)}"/>
+                        <p:commandButton icon="ui-icon-closethick" oncomplete="PF('cnfExcluirComentario').show()"
+                                         title="Excluir comentário" rendered="#{conteudoBean.ehAutorDoComentario(comentario)}"
+                                         actionListener="#{conteudoBean.setComentarioParaExcluir(comentario)}"/>
+                    </p:panelGrid>                        
+                </p:panelGrid>
+                <p:separator/>
+            </p:dataList>            
+        </p:outputPanel>
+    </p:overlayPanel>
+        
+    <p:dialog closable="true" closeOnEscape="true" header="Editar comentário"
+              hideEffect="explode" showEffect="fade" modal="true" 
+              widgetVar="dlgEditarComentario">
+        <h:form enctype="multipart/form-data" id="frmEditarComentario">
+            <p:panelGrid columns="4" styleClass="ui-noborder">
+                <p:inputTextarea rows="1" value="#{conteudoBean.comentario}" 
+                                 id="textoEditarComentario" maxlength="200"/>
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:commandButton value="Excluir imagem" update="msgExcluirImagemEditarComentario"
+                                     actionListener="#{conteudoBean.excluiImagemComentario()}"/>
+                    <p:outputPanel id="msgExcluirImagemEditarComentario">
+                        <p:outputLabel value="Comentário sem imagem atualmente." 
+                                       rendered="#{conteudoBean.comentarioParaEditarPossuiImagem()}"/>
+                    </p:outputPanel>
+                </p:panelGrid>
+                <p:fileUpload fileUploadListener="#{conteudoBean.fotoComentario}" 
+                                  invalidFileMessage="Use imagens BMP, JPG ou PNG." update="msgEditarComentario"
+                                  invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                                  sizeLimit="2097152" auto="true" label="Escolher"
+                                  allowTypes="/(\.|\/)(bmp|jpe?g|png)$/"/>
+                    <p:outputPanel id="msgEditarComentario">
+                        <p:outputLabel value="Foto inserida!" rendered="#{conteudoBean.upouFotoComentario()}"/>
+                    </p:outputPanel>
+                    <p:panelGrid columns="2" styleClass="ui-noborder">
+                        <p:commandButton value="Cancelar" onclick="PF('dlgEditarComentario').hide()"/>
+                        <p:commandButton value="Finalizar edição" onclick="PF('dlgEditarComentario').hide()"
+                                         update="frmConteudoGrowl:grwConteudo @form"
+                                         actionListener="#{conteudoBean.editaComentario()}"/>
+                    </p:panelGrid>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        
+        <p:confirmDialog message="Você tem certeza?" header="Excluir comentário"
+                         severity="alert" closeOnEscape="true" showEffect="fade"
+                         hideEffect="explode" widgetVar="cnfExcluirComentario">
+            <p:commandButton value="Sim" actionListener="#{conteudoBean.excluiComentario()}"
+                             update="frmConteudoGrowl:grwConteudo" 
+                             oncomplete="PF('cnfExcluirComentario').hide()"/>
+            <p:commandButton value="Não" onclick="PF('cnfExcluirComentario').hide();"
+                             type="button"/>
+        </p:confirmDialog>
+        
+        <p:confirmDialog message="Você tem certeza?" header="Excluir conteúdo"
+                         severity="alert" closeOnEscape="true" showEffect="fade"
+                         hideEffect="explode" widgetVar="cnfExcluirConteudo">
+            <p:commandButton value="Sim" actionListener="#{conteudoBean.exclui()}"
+                             update="frmConteudoGrowl:grwConteudo" 
+                             oncomplete="PF('cnfExcluirConteudo').hide()"/>
+            <p:commandButton value="Não" onclick="PF('cnfExcluirConteudo').hide();"
+                             type="button"/>
+        </p:confirmDialog>
+        
+        <p:confirmDialog message="Você tem certeza que deseja denunciar este 
+                         conteúdo? Use este recurso apenas se você acredita que
+                         este conteúdo é inadequado para o Ippie." 
+                         header="Denunciar conteúdo" hideEffect="explode"
+                         severity="alert" closeOnEscape="true" showEffect="fade"
+                         widgetVar="cnfDenunciarConteudo">
+            <p:commandButton value="Sim" actionListener="#{denunciaBean.denunciaConteudo()}"
+                             update="frmConteudoGrowl:grwConteudo" 
+                             oncomplete="PF('cnfDenunciarConteudo').hide()"/>
+            <p:commandButton value="Não" onclick="PF('cnfDenunciarConteudo').hide();"
+                             type="button"/>
+        </p:confirmDialog> 
+        
+        <p:confirmDialog message="Você tem certeza?" header="Bloquear conteúdo"
+                         severity="alert" closeOnEscape="true" showEffect="fade"
+                         hideEffect="explode" widgetVar="cnfBloquearConteudo">
+            <p:commandButton value="Sim" actionListener="#{usuarioBean.bloqueiaConteudo()}"
+                             update="frmConteudoGrowl:grwConteudo" 
+                             oncomplete="PF('cnfBloquearConteudo').hide()"/>
+            <p:commandButton value="Não" onclick="PF('cnfBloquearConteudo').hide();"
+                             type="button"/>
+        </p:confirmDialog> 
+        
+        <p:confirmDialog message="Você tem certeza?" header="Bloquear autor do conteúdo"
+                         severity="alert" closeOnEscape="true" showEffect="fade"
+                         hideEffect="explode" widgetVar="cnfBloquearUsuario">
+            <p:commandButton value="Sim" actionListener="#{usuarioBean.bloqueiaUsuario()}"
+                             update="frmConteudoGrowl:grwConteudo" 
+                             oncomplete="PF('cnfBloquearUsuario').hide()"/>
+            <p:commandButton value="Não" onclick="PF('cnfBloquearUsuario').hide();"
+                             type="button"/>
+        </p:confirmDialog>
+        
+        <p:dialog closable="true" closeOnEscape="true" header="Denunciar assunto"
+                  hideEffect="explode" showEffect="fade" modal="true" 
+                  widgetVar="dlgDenunciarAssunto">
+            <h:form id="frmDenunciarAssunto">
+                <p:dataTable value="#{denunciaBean.conteudoParaDenunciar.assuntos}"          
+                         var="assunto" selection="#{denunciaBean.assuntosParaDenunciar}"
+                         rowKey="#{assunto.codigo}" id="dttDenunciarAssunto">
+                    <f:facet name="header">
+                        Selecione os assuntos que você acredita que não deveriam 
+                        estar no Ippie. Tenha certeza de suas denúncias.
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{assunto.nome}"/>
+                    </p:column>
+                    <p:column headerText="Imagem">
+                        <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto.urlImagem}"
+                                        width="70"/>
+                    </p:column>
+                    <f:facet name="footer">
+                        <center>
+                            <p:commandButton value="Cancelar" 
+                                             onclick="PF('dlgDenunciarAssunto').hide();"/>
+                            <p:commandButton value="Sim, eu tenho certeza." update="frmConteudoGrowl:grwConteudo"
+                                             actionListener="#{denunciaBean.denunciaAssuntos()}"
+                                             oncomplete="PF('dlgDenunciarAssunto').hide();"/>
+                        </center>
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>  
+        
+        <p:dialog closable="true" closeOnEscape="true" header="Bloquear assunto"
+                  hideEffect="explode" showEffect="fade" modal="true" 
+                  widgetVar="dlgBloquearAssunto">
+            <h:form id="frmBloquearAssunto">
+                <p:dataTable value="#{usuarioBean.conteudoParaBloquear.assuntos}"
+                             var="assunto" selection="#{usuarioBean.assuntosParaBloquear}"
+                             rowKey="#{assunto.codigo}" id="dttBloquearAssunto">
+                    <f:facet name="header">
+                        Selecione os assuntos que você não deseja ver no Ippie.
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{assunto.nome}"/>
+                    </p:column>
+                    <p:column headerText="Imagem">
+                        <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto.urlImagem}"
+                                        width="70"/>
+                    </p:column>
+                    <f:facet name="footer">
+                        <center>
+                            <p:commandButton value="Cancelar" 
+                                             onclick="PF('dlgBloquearAssunto').hide();"/>
+                            <p:commandButton value="Bloquear assuntos" 
+                                             update="frmConteudoGrowl:grwConteudo" 
+                                             actionListener="#{usuarioBean.bloqueiaAssuntos()}"
+                                             oncomplete="PF('dlgBloquearAssunto').hide();"/>
+                        </center>
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+    <p:dialog closable="true" closeOnEscape="true" header="Postar conteúdo"
+                  hideEffect="explode" showEffect="fade" modal="true" 
+                  widgetVar="dlgPostarConteudo">
+        <h:form enctype="multipart/form-data" id="frmPostarConteudo">
+            <p:panelGrid columns="4" styleClass="ui-noborder">
+                <p:inputTextarea maxlength="1000" value="#{conteudoBean.conteudo}"
+                                 placeholder="O que você quer que os outros vejam?"
+                                 cols="40" rows="5" id="textoPostarConteudo"/>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:outputLabel value="Escolha os assuntos que tenham a ver com o seu post."/>
+                    <p:autoComplete multiple="true" var="assunto" selectLimit="5"
+                                    value="#{conteudoBean.assuntosConteudo}" id="atcAssuntoPostarConteudo"
+                                    completeMethod="#{assuntoBean.pesquisaAssuntosPassandoONome}"
+                                    itemLabel="#{assunto.nome}" itemValue="#{assunto}"
+                                    converter="assuntoConverter" queryDelay="450"
+                                    maxResults="5" cache="true" minQueryLength="2"
+                                    emptyMessage="Nenhum assunto foi encontrado. Por que você não o cria?">
+                        <p:column style="width:20%;text-align:center">
+                            <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto.urlImagem}"
+                                            width="70"/>
+                        </p:column>
+                        <p:column>
+                            #{assunto.nome}
+                        </p:column>
+                    </p:autoComplete>
+                </p:panelGrid>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:outputLabel value="Cole aqui o endereço de algum site que você queira compartilhar."/>
+                    <p:inputText value="#{conteudoBean.link}" maxlength="1999" id="textoLinkPostarConteudo"/>
+                </p:panelGrid>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:fileUpload fileUploadListener="#{conteudoBean.fotoOuVideoConteudo}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG." update="msgPostarConteudo"
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/" auto="true" label="Escolher"/>
+                    <p:outputPanel id="msgPostarConteudo">
+                        <p:outputLabel value="Foto inserida com sucesso!" rendered="#{conteudoBean.upouFotoOuVideoConteudo()}"/>
+                    </p:outputPanel>
+                </p:panelGrid>
+                
+                <p:spacer height="40"/>
+                
+                <f:facet name="footer">
+                    <center>
+                        <p:outputLabel value="O tipo de conteúdo é:"/>
+                        <p:spacer width="20"/>
+                        <p:selectOneButton value="#{conteudoBean.tipoConteudo}" id="slcAssuntoPostarConteudo">
+                            <f:selectItem itemLabel="Sobre alguém que eu conheço que faleceu"
+                                      itemValue="Morte"/>
+                            <f:selectItem itemLabel="Sobre uma opinião que eu tenho" itemValue="Opiniao"/>
+                            <f:selectItem itemLabel="Nenhuma das alternativas anteriores" itemValue="Normal"/>
+                        </p:selectOneButton>                        
+                    </center>
+                </f:facet>
+            </p:panelGrid>
+            <p:spacer height="30"/>
+            <div>
+                <div style="float: left">
+                    <p:commandButton value="Criar assunto"
+                                     onclick="PF('dlgCriarAssunto').show()"/>
+                </div>
+                <center>
+                    <p:commandButton value="Cancelar" update="@form"
+                                     oncomplete="PF('dlgPostarConteudo').hide()" 
+                                     action="#{conteudoBean.anulaPostarConteudo()}"/>
+                    <p:commandButton value="Postar conteúdo" 
+                                     update="frmConteudoGrowl:grwConteudo @form"
+                                     action="#{conteudoBean.postarConteudo()}"
+                                     oncomplete="PF('dlgPostarConteudo').hide()"/>
+                </center>
+            </div>
+        </h:form>            
+    </p:dialog>
+    
+    <p:dialog closable="true" closeOnEscape="true" header="Editar conteúdo"
+              hideEffect="explode" showEffect="fade" modal="true" 
+              widgetVar="dlgEditarConteudo">
+        <h:form enctype="multipart/form-data" id="frmEditarConteudo">
+            <p:panelGrid columns="4" styleClass="ui-noborder">
+                <p:inputTextarea maxlength="1000" value="#{conteudoBean.conteudo}"
+                                 placeholder="O que você quer que os outros vejam?"
+                                 cols="40" rows="5" id="textoEditarConteudo"/>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:outputLabel value="Cole aqui o endereço de algum site que você queira compartilhar."/>
+                    <p:inputText value="#{conteudoBean.link}" maxlength="1999" id="textoLinkEditarConteudo"/>
+                </p:panelGrid>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:commandButton value="Excluir imagem" update="msgExcluirImagemEditarConteudo"
+                                     actionListener="#{conteudoBean.excluiImagemOuVideoConteudo()}"/>
+                    <p:outputPanel id="msgExcluirImagemEditarConteudo">
+                        <p:outputLabel value="Conteúdo sem imagem atualmente."
+                                       rendered="#{conteudoBean.conteudoParaEditarPossuiImagem()}"/>
+                    </p:outputPanel>
+                </p:panelGrid>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:fileUpload fileUploadListener="#{conteudoBean.fotoOuVideoConteudo}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG." update="msgEditarConteudo"
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/" auto="true" label="Escolher"/>
+                    <p:outputPanel id="msgEditarConteudo">
+                        <p:outputLabel value="Foto inserida com sucesso!" rendered="#{conteudoBean.upouFotoOuVideoConteudo()}"/>
+                    </p:outputPanel>
+                </p:panelGrid>
+                
+                <p:spacer height="40"/>
+                
+                <f:facet name="footer">
+                    <center>
+                        <p:outputLabel value="O tipo de conteúdo é:"/>
+                        <p:spacer width="20"/>
+                        <p:selectOneButton value="#{conteudoBean.tipoConteudo}" id="slcAssuntoEditarConteudo">
+                            <f:selectItem itemLabel="Sobre alguém que eu conheço que faleceu"
+                                      itemValue="Morte"/>
+                            <f:selectItem itemLabel="Sobre uma opinião que eu tenho" itemValue="Opiniao"/>
+                            <f:selectItem itemLabel="Nenhuma das alternativas anteriores" itemValue="Normal"/>
+                        </p:selectOneButton>                        
+                    </center>
+                </f:facet>
+            </p:panelGrid>
+            <p:spacer height="30"/>
+            <div>
+                <div style="float: left;">
+                    <p:commandButton value="Criar assunto" 
+                                     onclick="PF('dlgCriarAssunto').show()"/>
+                </div>
+                <center>
+                    <p:commandButton value="Cancelar" oncomplete="PF('dlgEditarConteudo').hide()" 
+                                     update="@form"
+                                     action="#{conteudoBean.anulaPostarConteudo()}"/>
+                    <p:commandButton value="Finalizar edição" 
+                                     update="frmConteudoGrowl:grwConteudo @form"
+                                     actionListener="#{conteudoBean.edita()}"
+                                     oncomplete="PF('dlgEditarConteudo').hide()"/>
+                </center>
+            </div>            
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog closable="true" closeOnEscape="true" widgetVar="dlgCriarAssunto"
+              header="Criar assunto" showEffect="fade" hideEffect="explode"
+              modal="true">
+        <h:form id="frmCriarAssunto">
+            <p:panelGrid columns="3" styleClass="ui-noborder">
+                <p:inputText placeholder="Nome do assunto" value="#{assuntoBean.nome}" 
+                             maxlength="30"/>
+                <p:fileUpload fileUploadListener="#{assuntoBean.fotoAssunto}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG."
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152" auto="true" label="Escolher"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/" 
+                              update="msgCriarAssunto"/>
+                    <p:outputPanel id="msgCriarAssunto">
+                        <p:outputLabel value="Foto inserida com sucesso!" 
+                                       rendered="#{assuntoBean.upouFotoAssunto()}"/>
+                    </p:outputPanel>
+                <f:facet name="footer">
+                    <center>
+                        <p:commandButton value="Criar Assunto" update="frmConteudoGrowl:grwConteudo @form" 
+                                         actionListener="#{assuntoBean.criaAssunto()}"
+                                         oncomplete="PF('dlgCriarAssunto').hide()"/>
+                        <p:spacer width="20"/>
+                        <p:commandButton value="Cancelar" update="@form"
+                                         oncomplete="PF('dlgCriarAssunto').hide()"/>
+                    </center>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog closable="true" closeOnEscape="true" widgetVar="dlgEditarAssunto"
+              header="Editar assunto" showEffect="fade" hideEffect="explode"
+              modal="true">
+        <h:form id="frmEditarAssunto">
+            <p:panelGrid columns="4" styleClass="ui-noborder">
+                <p:inputText placeholder="Nome do assunto" value="#{assuntoBean.paraEditar.nome}" 
+                             maxlength="30"/>
+                
+                <p:panelGrid columns="1" styleClass="ui-noborder">
+                    <p:commandButton value="Excluir imagem" update="msgExcluirImagemEditarAssunto @form"
+                                     actionListener="#{assuntoBean.excluiImagemAssunto()}"/>
+                    <p:outputPanel id="msgExcluirImagemEditarAssunto">
+                        <p:outputLabel value="Assunto sem imagem atualmente."
+                                       rendered="#{assuntoBean.assuntoParaEditarPossuiImagem()}"/>
+                    </p:outputPanel>
+                </p:panelGrid>                
+                
+                <p:fileUpload fileUploadListener="#{assuntoBean.fotoAssunto}" 
+                              invalidFileMessage="Use imagens BMP, JPG ou PNG."
+                              invalidSizeMessage="Use fotos com até 2MB de tamanho."
+                              sizeLimit="2097152" auto="true" label="Escolher"
+                              allowTypes="/(\.|\/)(bmp|jpe?g|png)$/" 
+                              update="msgCriarAssunto"/>
+                    <p:outputPanel id="msgCriarAssunto">
+                        <p:outputLabel value="Foto inserida com sucesso!" 
+                                       rendered="#{assuntoBean.upouFotoAssunto()}"/>
+                    </p:outputPanel>
+                <f:facet name="footer">
+                    <center>
+                        <p:commandButton value="Editar Assunto" update="frmConteudoGrowl:grwConteudo @form"
+                                         actionListener="#{assuntoBean.editaAssunto()}"
+                                         oncomplete="PF('dlgEditarAssunto').hide()"/>
+                        <p:spacer width="20"/>
+                        <p:commandButton value="Cancelar" update="@form"
+                                         action="#{assuntoBean.limpaEditaAssunto()}"
+                                         oncomplete="PF('dlgEditarAssunto').hide()"/>
+                    </center>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>    
+
+</ui:composition>

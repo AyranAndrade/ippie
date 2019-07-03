@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Assuntos favoritos - #{usuarioBean.usuario().nomeCompleto}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" 
+              href="#{facesContext.externalContext.requestContextPath}/css/desktop.css" 
+              media="screen"/>
+    </h:head>
+    <h:body class="fundo">
+        <script type="text/javascript">
+            function handleDrop(event, ui) 
+            {
+            var droppedCar = ui.draggable;
+            droppedCar.fadeOut('fast');
+            }
+        </script>     
+        
+        <ui:include src="../WEB-INF/paginas/barra_superior.xhtml"/>
+        
+        <h:form id="frmGerenciarAssuntos">
+            <p:growl id="grwGerenciarAssuntos" showDetail="true"/>
+        </h:form>
+        
+        <h:form>
+            <p:remoteCommand name="rmtAtualizaGerenciarAssuntos" autoRun="true"
+                             update="tbvGerenciarAssuntos:dtgGerenciarAssuntosDisponiveis"
+                             actionListener="#{assuntoBean.inicia()}"/>
+            <p:remoteCommand name="rmtAtualizaAssuntosCriados" autoRun="true"
+                             update="tbvGerenciarAssuntos:dtgAssuntosCriados"
+                             actionListener="#{assuntoBean.iniciaAssuntosCriados(usuarioBean.usuario())}"/>
+        </h:form>
+        
+        <p:spacer height="20"/>
+        
+        <p:tabView orientation="top" id="tbvGerenciarAssuntos">
+            <p:tab title="Seus assuntos favoritos">
+                
+                <p:panelGrid columns="2">
+                    <p:dataGrid rows="12" id="dtgGerenciarAssuntosDisponiveis"
+                                var="assunto" value="#{assuntoBean.pesquisa}" 
+                                emptyMessage="Nenhuma assunto encontrado.">
+                        <f:facet name="header">
+                            <h:form>
+                                <p:panelGrid columns="3" styleClass="ui-noborder">
+                                    <f:facet name="header">
+                                        Pesquise por assuntos interessantes para você. 
+                                        <br/>
+                                        Apague todo a pesquisa e clique em "Pesquisar"
+                                        <br/>
+                                        para voltar até a pesquisa original.
+                                    </f:facet>
+                            
+                                    <p:inputText placeholder="Nome do assunto" 
+                                                 value="#{assuntoBean.nome}" maxlength="30"/>
+                                    <p:commandButton value="Pesquisar" 
+                                                     update="tbvGerenciarAssuntos:dtgGerenciarAssuntosDisponiveis @form"
+                                                     actionListener="#{assuntoBean.pesquisaAssuntosPeloNome()}"/>
+                                </p:panelGrid>
+                            </h:form>
+                        </f:facet>
+                                
+                        <p:panelGrid columns="1" id="cadaAssunto">
+                            <f:facet name="header">
+                                <p:outputLabel value="#{assunto.nome}"/>
+                            </f:facet>
+                            <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto.urlImagem}"/>
+                        </p:panelGrid>
+                        
+                        <p:draggable for="cadaAssunto" revert="true" stack=".ui-panel"/>
+
+                    </p:dataGrid>
+                    
+                    <p:fieldset legend="Seus assuntos favoritos" id="fldGerenciarAssuntosSelecionados">
+                        <p:outputPanel id="tptGerenciarAssuntosSelecionados">
+                    
+                            <p:dataGrid rows="12" 
+                                        emptyMessage="Arraste e solte aqui os assuntos que você acha interessante."
+                                        value="#{usuarioBean.usuario().assuntosFavoritos}" var="assunto2">
+                                <p:panelGrid columns="1">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{assunto2.nome}"/>
+                                    </f:facet>
+                            
+                                    <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto2.urlImagem}"/>
+                            
+                                    <f:facet name="footer">
+                                        <p:commandButton value="Excluir"
+                                                         update="tbvGerenciarAssuntos:tptGerenciarAssuntosSelecionados tbvGerenciarAssuntos:dtgGerenciarAssuntosDisponiveis"
+                                                         actionListener="#{assuntoBean.onTagExclude(assunto2)}"/>
+                                    </f:facet>
+                                </p:panelGrid>
+                            
+                            </p:dataGrid>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    
+                    <p:droppable for="fldGerenciarAssuntosSelecionados" tolerance="touch" 
+                                 activeStyleClass="ui-state-highlight" onDrop="handleDrop"
+                                 datasource="dtgGerenciarAssuntosDisponiveis">
+                        <p:ajax listener="#{assuntoBean.onTagDrop}" 
+                        update="tptGerenciarAssuntosSelecionados dtgGerenciarAssuntosDisponiveis frmGerenciarAssuntos:grwGerenciarAssuntos"/>
+                    </p:droppable>
+                    
+                </p:panelGrid>
+            </p:tab>
+            
+            <p:tab title="Assuntos que você criou">
+                <p:dataGrid rows="12" id="dtgAssuntosCriados" paginator="true" 
+                            var="assunto3" value="#{assuntoBean.assuntosCriados}" 
+                            emptyMessage="Nenhuma assunto encontrado.">
+                    <p:panelGrid columns="1">
+                        <f:facet name="header">
+                            <p:outputLabel value="#{assunto3.nome}"/>
+                        </f:facet>
+                        <p:graphicImage value="#{configuracaoBean.fotoAssunto()}#{assunto3.urlImagem}"/>
+                        <f:facet name="footer">
+                            <p:commandButton value="Editar" update="frmEditarAssunto" 
+                                             actionListener="#{assuntoBean.setParaEditar(assunto3)}"
+                                             oncomplete="PF('dlgEditarAssunto').show()"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </p:dataGrid>
+            </p:tab>
+            
+            <p:tab title="Criar um assunto">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="ui-noborder">
+                        <p:outputLabel value="Nome do assunto:"/>
+                        <p:inputText value="#{assuntoBean.nome}" maxlength="30"/>
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Criar Assunto" update="frmGerenciarAssuntos:grwGerenciarAssuntos @form" 
+                                             actionListener="#{assuntoBean.criaAssunto()}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </p:tab>
+            
+        </p:tabView>
+
+    <ui:include src="../WEB-INF/paginas/menu_lateral.xhtml"/>
+    
+    <ui:include src="../WEB-INF/paginas/opcoes_conteudo_comentario.xhtml"/>
+        
+    </h:body>        
+</html>

@@ -1,0 +1,52 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+    <p:dialog closable="true" closeOnEscape="true" header="Buscar pessoas"
+              modal="true"
+              hideEffect="explode" showEffect="fade" widgetVar="dlgBuscarUsuario">
+        <p:ajax event="close" listener="#{usuarioBean.limpaBuscarUsuario}"/>
+        <p:outputPanel id="utpBuscarUsuario">
+            <h:form id="frmBuscarUsuario">
+                <p:panelGrid columns="2" styleClass="ui-noborder">
+                    <p:inputText value="#{usuarioBean.nome}" maxlength="60"
+                                 placeholder="Nome da pessoa." id="txtBuscarUsuario"/>
+                    <p:commandButton value="Pesquisar" update="utpBuscarUsuario"
+                                     actionListener="#{usuarioBean.pesquisa()}"/>
+                </p:panelGrid>            
+            </h:form>
+            <p:dataList value="#{usuarioBean.pesquisa}" var="usuario" 
+                        itemType="none" id="dtlBuscarUsuario"
+                        emptyMessage="Nenhuma pessoa encontrada.">
+                
+                <p:panelGrid columns="2">
+                    <p:panelGrid columns="1" styleClass="ui-noborder">
+                        <p:commandLink actionListener="#{conteudoBean.setPerfilParaVisistar(usuario)}"
+                                       oncomplete="PF('dlgBuscarUsuario').hide()">
+                            <f:actionListener binding="#{conteudoBean.redirecionaPerfil()}"/>
+                            <f:actionListener binding="#{usuarioBean.limpaBuscarUsuario(null)}"/>
+                            <p:graphicImage value="#{configuracaoBean.fotoPerfil()}#{usuario.fotoPerfil}"
+                                            width="100" style="border-radius: 50%"/>
+                        </p:commandLink>
+                            
+                        <p:commandLink actionListener="#{conteudoBean.setPerfilParaVisistar(usuario)}"
+                                       value="#{usuario.nomeCompleto}"
+                                       oncomplete="PF('dlgBuscarUsuario').hide()">
+                            <f:actionListener binding="#{usuarioBean.limpaBuscarUsuario(null)}"/>
+                            <f:actionListener binding="#{conteudoBean.redirecionaPerfil()}"/>
+                        </p:commandLink>
+                    </p:panelGrid>
+                    <p:outputLabel value="#{usuario.descricao}" 
+                                   rendered="#{not empty usuario.descricao}"/>
+                    <p:outputLabel value="Sem descrição." 
+                                   rendered="#{empty usuario.descricao}"/>
+                </p:panelGrid>
+            </p:dataList>
+        </p:outputPanel>
+        <p:commandButton value="Fechar" onclick="PF('dlgBuscarUsuario').hide()"/>
+    </p:dialog>
+    
+</ui:composition>

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Agradecimento</title>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+        <style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;}
+            a{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}            
+        </style>      
+    </h:head>
+    <h:body class="fundo">
+        <p:panel>
+            <f:facet name="header">
+                <center>
+                    <p:link outcome="login">
+                        <p:graphicImage value="imagens/logo.png" height="200"/>
+                    </p:link>
+                    <br/>
+                    <div style="font-weight: bolder">
+                        Nesta página, nós temos uma forma de agradecer a todas as pessoas 
+                        que acreditaram neste projeto desde o início. Parece que temos uma história curta, mas, na verdade,
+                        passamos por muita coisa. Caímos e nos levantamos várias vezes, para ficar cada vez melhores. E, acima de tudo,
+                        não tivemos medo: O medo de cair nos impede de voar.
+                    </div>
+                </center>
+            </f:facet>
+            
+            <center>
+                    <p:panelGrid columns="1" styleClass="ui-noborder">
+                        <f:facet name="header">
+                            <h4>
+                                <p:outputLabel value="Agradecemos muito a todas as pessoas que usam e usaram o Ippie. Agradecemos muito também a..."/>
+                            </h4>
+                        </f:facet>
+                        
+                        <lu>
+                            <li>Eduardo Francini Da Cruz, por ser o primeiro homem, e, no geral, a primeira pessoa a usar e a postar algo no Ippie;</li>
+                            <li>Yasmin Toledo, por ser a primeira mulher a usar o Ippie, e também por ser a primeira pessoa a dar uma reprovação em um conteúdo;</li>
+                            <li>Mauricio Sassaki, por ser a primeira pessoa a acessar o Ippie de fora do Brasil e a postar algo, nesta mesma condição;</li>
+                            <li>Geovani Silva, por ser a primeira pessoa a nos sugerir um plano de negócios;</li>
+                            <li>Leonardo Sassaki, por suas valiosas sugestões de melhoria;</li>
+                            <li>E ao Samuel Freitas, por ser a pessoa que mais nos deu críticas construtivas, foram inúmeras! (Além de ser a primeira pessoa a dar uma aprovação em um conteúdo).</li>
+                        </lu>
+                        
+                        <f:facet name="footer">
+                            <h2>
+                                <p:outputLabel value="Muito obrigado!"/>
+                            </h2>
+                        </f:facet>
+                    </p:panelGrid>
+                </center>
+            
+            <f:facet name="footer">
+                <center>
+                    <p:link value="Agradecimentos" outcome="agradecimento"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Termos de uso" outcome="termos_de_uso"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Contato e sugestões" outcome="contato"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Quer trabalhar no Ippie?" outcome="trabalhar_no_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="O que é o Ippie?" outcome="o_que_e_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Login" outcome="login"/>
+                </center>
+            </f:facet>
+        </p:panel>
+    </h:body>
+</html>

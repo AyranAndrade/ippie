@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Errar é humano.</title>
+        <link rel="icon" type="image/x-icon"
+              href="#{facesContext.externalContext.requestContextPath}/imagens/favicon.ico"/>
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" 
+              media="screen"/>
+<style>
+            .ui-widget-content{background: none repeat scroll 0% 0% transparent;}
+            a{color: white !important;}
+            .ui-widget-header{border:none;}
+            .ui-widget-content{border:none}
+        </style>        
+    </h:head>
+    <h:body class="fundo">
+        <p:panel>
+            <f:facet name="header">
+                <center>
+                    <p:link outcome="login">
+                        <p:graphicImage value="imagens/logo.png" height="200"/>
+                    </p:link>
+                    <br/>
+                    <div style="font-weight: bolder">Infelizmente, tivemos um erro interno. Recarregue a página ou espere um pouquinho :/</div>
+                </center>                
+            </f:facet>
+            
+                <center>
+                    
+                    <p:panelGrid columns="1" styleClass="ui-noborder">
+                        <p:graphicImage value="imagens/erro.png" height="300"/>
+                        <p:link value="Não se preocupe, os estagiários do Ippie estão resolvendo o problema. Talvez, você queira voltar a nossa página inicial."
+                                outcome="login"/>
+                    </p:panelGrid>
+                </center>
+            
+            <f:facet name="footer">
+                <center>
+                    <p:link value="Agradecimentos" outcome="agradecimento"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Termos de uso" outcome="termos_de_uso"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Contato e sugestões" outcome="contato"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Quer trabalhar no Ippie?" outcome="trabalhar_no_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="O que é o Ippie?" outcome="o_que_e_ippie"/>
+                    <p:spacer width="20" height="0"/>
+                    <p:link value="Login" outcome="login"/>
+                </center>                
+            </f:facet>            
+        </p:panel>
+    </h:body>
+</html>
